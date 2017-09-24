@@ -84,10 +84,6 @@ public class Countries extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu_search, menu);
-//        MenuItem item = menu.findItem(R.id.menuSearch);
-//        SearchView searchView = (SearchView)item.getActionView();
 
         getMenuInflater().inflate(R.menu.menu_search, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
