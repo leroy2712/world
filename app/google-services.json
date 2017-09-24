@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "196594418683",
+    "firebase_url": "https://world-90126.firebaseio.com",
+    "project_id": "world-90126",
+    "storage_bucket": "world-90126.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196594418683:android:e571c08f424de6c4",
+        "android_client_info": {
+          "package_name": "com.example.leroy.world"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196594418683-i0f7ervof7d4v9708cqv9ce07u2iinif.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.leroy.world",
+            "certificate_hash": "2d9257a5b7c6f430e9f50435093929735b033e5f"
+          }
+        },
+        {
+          "client_id": "196594418683-fffh933eq1tfqf1jjum50629m5vtt2qu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMsUZmATFb1JGqqX4HGN4mRerwSYU9T1k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196594418683-fffh933eq1tfqf1jjum50629m5vtt2qu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
