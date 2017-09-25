@@ -1,6 +1,7 @@
 package com.example.leroy.world;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 public class ExploreActivity extends AppCompatActivity implements OnConnectionFailedListener, View.OnClickListener {
     SignInButton mSignInButton;
@@ -25,7 +28,6 @@ public class ExploreActivity extends AppCompatActivity implements OnConnectionFa
     TextView mStatusTextView;
     public static final int RC_SIGN_IN = 9001;
     private static final String TAG = "SignInActivity";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +45,8 @@ public class ExploreActivity extends AppCompatActivity implements OnConnectionFa
 
         mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(this);
-        mSignOutButton = (Button) findViewById(R.id.signOut);
+        mSignOutButton = (Button) findViewById(R.id.sign_out_button);
         mSignOutButton.setOnClickListener(this);
-
         mStatusTextView = (TextView) findViewById(R.id.statusTextView);
     }
 
@@ -55,7 +56,9 @@ public class ExploreActivity extends AppCompatActivity implements OnConnectionFa
             case R.id.sign_in_button:
                 signIn();
                 break;
-            // ...
+            case R.id.sign_out_button:
+                signOut();
+                break;
         }
     }
 
@@ -63,6 +66,18 @@ public class ExploreActivity extends AppCompatActivity implements OnConnectionFa
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Intent intent = new Intent(ExploreActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                });
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -80,10 +95,19 @@ public class ExploreActivity extends AppCompatActivity implements OnConnectionFa
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            mStatusTextView.setText("Logged In!");
+
+            //save email to shared preference
+            SharedPreferences account = getApplicationContext().getSharedPreferences("MyAccount", MODE_PRIVATE);
+            SharedPreferences.Editor editor = account.edit();
+            editor.putString("email", acct.getDisplayName());
+
+            //open GameActivity
+            Intent intent = new Intent(ExploreActivity.this, GameActivity.class);
+            intent.putExtra("name", acct.getDisplayName());
+            startActivity(intent);
         } else {
-            // Signed out, show unauthenticated UI.
-            mStatusTextView.setText("Logged Out!");
+            Intent intent = new Intent(ExploreActivity.this, ExploreActivity.class);
+            startActivity(intent);
         }
     }
 
