@@ -13,13 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -51,35 +49,59 @@ public class Countries extends AppCompatActivity {
         }
     }
 
+    private class Downloads extends AsyncTask<String, Void, String> {
+
+        OkHttpClient client = new OkHttpClient();
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            Request.Builder builder = new Request.Builder();
+            builder.url(strings[0]);
+            Request request = builder.build();
+            try {
+                Response response = client.newCall(request).execute();
+                return response.body().string();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String string) {
+            super.onPostExecute(string);
+            try {
+                String countries = string;
+                JSONArray jsonArray = new JSONArray(countries);
+
+                for(int j=0; j<jsonArray.length(); j++){
+                    JSONObject names = jsonArray.getJSONObject(j);
+                    nation.add(names.getString("name"));
+                }
+
+                nations = (ListView) findViewById(R.id.unitedNations);
+                arrayAdapter = new ArrayAdapter<String>(Countries.this, android.R.layout.simple_list_item_1, nation);
+                nations.setAdapter(arrayAdapter);
+
+            } catch (Exception e) {
+                //didn't work
+            }
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_countries);
+    }
 
-        DownloadTask task = new DownloadTask();
+    @Override
+    protected void onStart() {
+        Downloads task = new Downloads();
         task.execute(url);
-
-        try {
-            String countries = task.get();
-            JSONArray jsonArray = new JSONArray(countries);
-
-            for(int j=0; j<jsonArray.length(); j++){
-                JSONObject names = jsonArray.getJSONObject(j);
-                nation.add(names.getString("name"));
-            }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        nations = (ListView) findViewById(R.id.unitedNations);
-        arrayAdapter = new ArrayAdapter<String>(Countries.this, android.R.layout.simple_list_item_1, nation);
-        nations.setAdapter(arrayAdapter);
+        super.onStart();
     }
 
     @Override
