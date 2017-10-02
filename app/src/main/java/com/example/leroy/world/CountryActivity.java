@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -89,6 +91,10 @@ public class CountryActivity extends AppCompatActivity {
                 Picasso.with(CountryActivity.this)
                         .load(imageURL + alpha2Code.toLowerCase() + ".png")
                         .into(flag);
+
+                Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.fade);
+                flag.startAnimation(animation);
 
                 arrAdapt = new ArrayAdapter<String>(CountryActivity.this, android.R.layout.simple_list_item_1, info);
                 nation.setAdapter(arrAdapt);
