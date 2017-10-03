@@ -1,9 +1,12 @@
 package com.example.leroy.world;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
@@ -31,6 +34,7 @@ public class CountryActivity extends AppCompatActivity {
     private ListView nation;
     private ImageView flag;
     ArrayAdapter<String> arrAdapt;
+    private TextView nationalName;
 
     private class DownloadTask extends AsyncTask<String, Void, String>{
 
@@ -73,17 +77,17 @@ public class CountryActivity extends AppCompatActivity {
                 String nativeName= jsonObject.getString("nativeName");
                 String numericCode= jsonObject.getString("numericCode");
 
-                info.add(topLevelDomain);
-                info.add(callingCodes);
-                info.add(capital);
-                info.add(region);
-                info.add(subregion);
-                info.add(population);
-                info.add(demonym);
-                info.add(area);
-                info.add(gini);
-                info.add(nativeName);
-                info.add(numericCode);
+                info.add("Web Domain: " + topLevelDomain);
+                info.add("Calling Code: " + callingCodes);
+                info.add("Capital City: " + capital);
+                info.add("Continent: " + region);
+                info.add("Sub-Region: " + subregion);
+                info.add("Population: " + population);
+                info.add("Demonym: " + demonym);
+                info.add("Area: " + area);
+                info.add("GINI: " + gini);
+                info.add("Native Name: " + nativeName);
+                info.add("Numeric Code: " + numericCode);
 
                 nation = (ListView) findViewById(R.id.country_facts);
                 flag = (ImageView) findViewById(R.id.flag_image);
@@ -92,10 +96,6 @@ public class CountryActivity extends AppCompatActivity {
                         .load(imageURL + alpha2Code.toLowerCase() + ".png")
                         .into(flag);
 
-                Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.fade);
-                flag.startAnimation(animation);
-
                 arrAdapt = new ArrayAdapter<String>(CountryActivity.this, android.R.layout.simple_list_item_1, info);
                 nation.setAdapter(arrAdapt);
 
@@ -103,6 +103,24 @@ public class CountryActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void imageClick (View view){
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+        flag.startAnimation(animation);
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent i = getIntent();
+                String currentNation = i.getStringExtra("country");
+
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://en.wikipedia.org/wiki/" + currentNation));
+                startActivity(intent);
+            }
+        }, 1200);
+
 
     }
 
@@ -113,6 +131,9 @@ public class CountryActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String country = intent.getStringExtra("country");
+
+        nationalName = (TextView) findViewById(R.id.country_name);
+        nationalName.setText(country);
 
         DownloadTask task = new DownloadTask();
         task.execute(url + country);

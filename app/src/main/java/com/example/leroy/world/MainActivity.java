@@ -2,37 +2,59 @@ package com.example.leroy.world;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
-    private Button explore;
-    private Button countries;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+    SignInButton mSignInButton;
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        explore = (Button) findViewById(R.id.explore);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        LoadingFragment loadingFragment = new LoadingFragment();
+        fragmentTransaction.add(R.id.frameHolder, loadingFragment);
+        fragmentTransaction.commit();
 
-        explore.setOnClickListener(new View.OnClickListener() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this , this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ExploreActivity.class);
-                startActivity(intent);
+            public void run() {
+                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                    Intent intent = new Intent(MainActivity.this, CountriesActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(MainActivity.this, ExploreActivity.class);
+                    startActivity(intent);
+                }
             }
-        });
+        }, 2500);
+    }
 
-        countries = (Button) findViewById(R.id.countries);
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-        countries.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Countries.class);
-                startActivity(intent);
-            }
-        });
     }
 }

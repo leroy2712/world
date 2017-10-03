@@ -1,21 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/menu_main"
-        android:title="Home"
-        android:icon="@drawable/menu"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/menu_countries"
-        android:title="Countries"
-        android:icon="@drawable/menu"
-        app:showAsAction="never"/>
 
     <item
         android:id="@+id/menu_sign_out"
         android:title="Sign Out"
-        android:icon="@drawable/menu"
         app:showAsAction="never"/>
 </menu>

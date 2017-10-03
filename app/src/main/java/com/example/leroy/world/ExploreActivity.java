@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
@@ -26,7 +26,7 @@ import com.google.android.gms.common.api.Status;
 
 public class ExploreActivity extends AppCompatActivity implements OnConnectionFailedListener, View.OnClickListener {
     SignInButton mSignInButton;
-    Button mSignOutButton;
+    Button explore;
     GoogleApiClient mGoogleApiClient;
     TextView mStatusTextView;
     public static final int RC_SIGN_IN = 9001;
@@ -99,14 +99,20 @@ public class ExploreActivity extends AppCompatActivity implements OnConnectionFa
             SharedPreferences.Editor editor = account.edit();
             editor.putString("email", acct.getDisplayName());
 
-            //open GameActivity
-            Intent intent = new Intent(ExploreActivity.this, GameActivity.class);
+            //open CountriesActivity
+            Intent intent = new Intent(ExploreActivity.this, CountriesActivity.class);
             intent.putExtra("name", acct.getDisplayName());
             startActivity(intent);
         } else {
             Intent intent = new Intent(ExploreActivity.this, ExploreActivity.class);
             startActivity(intent);
         }
+    }
+
+    public void blink (View view){
+        ImageView image = (ImageView)findViewById(R.id.worldImageView);
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
+        image.startAnimation(animation);
     }
 
     @Override
@@ -117,33 +123,5 @@ public class ExploreActivity extends AppCompatActivity implements OnConnectionFa
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_extras, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.menu_main:
-                Intent intent = new Intent(ExploreActivity.this, MainActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.menu_countries:
-                Intent intent2 = new Intent(ExploreActivity.this, Countries.class);
-                startActivity(intent2);
-                break;
-            case R.id.menu_sign_out:
-                signOut();
-                break;
-
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
