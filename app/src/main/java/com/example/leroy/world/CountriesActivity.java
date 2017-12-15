@@ -188,6 +188,7 @@ public class CountriesActivity extends AppCompatActivity implements GoogleApiCli
         alertDialogBuilder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                //what to do if user clicks yes
                 signOut();
             }
         });
@@ -195,6 +196,7 @@ public class CountriesActivity extends AppCompatActivity implements GoogleApiCli
         alertDialogBuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                //what to do if user clicks no
                 finish();
             }
         });
